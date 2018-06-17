@@ -1,5 +1,5 @@
 const {deepEqual} = require("assert");
-const {getDiffBetween} = require("../index");
+const getDiffBetween = require("../index");
 
 describe("#getDiffBetween", () => {
     it("returns an empty array if both lists are empty", () => {

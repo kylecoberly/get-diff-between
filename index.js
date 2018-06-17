@@ -3,36 +3,22 @@ function getDiffBetween(oldArray, newArray){
     newIds = new Set(newArray.map(item => item.id));
     const removals = difference(oldIds, newIds);
     const additions = difference(newIds, oldIds);
+    const removedItems = [...removals].map(id => ({id}));
     const addedItems = [...additions].map(id => newArray.find(element => element.id == id));
 
-    const diffArray = [...removals].reduce((diffArray, removalId) => {
-        addRemoval(diffArray, removalId);
-        return diffArray;
-    }, []);
+    const diffArray = removedItems.reduce(addToDiffList.bind(null, "REMOVE"), []);
+    return addedItems.reduce(addToDiffList.bind(null, "ADD"), diffArray);
+}
 
-    return addedItems.reduce((diffArray, item) => {
-        addAddition(diffArray, item);
-        return diffArray;
-    }, diffArray);
+function addToDiffList(message, diffArray, item){
+    diffArray.push(Object.assign({
+        type: message
+    }, item));
+    return diffArray;
 }
 
 function difference(minuend, subtrahend){
     return new Set([...minuend].filter(element => !subtrahend.has(element)));
-}
-
-function addRemoval(array, id){
-    array.push({
-        type: "REMOVE",
-        id: id
-    });
-    return array;
-}
-
-function addAddition(array, item){
-    array.push(Object.assign({
-        type: "ADD",
-    }, item));
-    return array;
 }
 
 module.exports = {

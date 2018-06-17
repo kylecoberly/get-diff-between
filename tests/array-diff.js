@@ -7,7 +7,7 @@ describe("#getDiffBetween", () => {
         const updatedList = [];
         deepEqual(getDiffBetween(list, updatedList), []);
     });
-    xit("returns an empty array if two arrays are equal", () => {
+    it("returns an empty array if two arrays are equal", () => {
         const list = [{
             id: 1,
             name: "Kyle"
@@ -18,14 +18,14 @@ describe("#getDiffBetween", () => {
         }];
         deepEqual(getDiffBetween(list, updatedList), []);
     });
-    xit("detects an addition", () => {
+    it("detects a removal", () => {
         const list = [{
             id: 2,
             name: "Kyle"
         }];
         const updatedList = [];
         deepEqual(getDiffBetween(list, updatedList), [{
-            type: "ADD",
+            type: "REMOVE",
             id: 2
         }]);
     });
@@ -36,8 +36,8 @@ describe("#getDiffBetween", () => {
             name: "Kyle"
         }];
         deepEqual(getDiffBetween(list, updatedList), [{
-            type: "REMOVE",
-            id: 1
+            type: "ADD",
+            id: 2
         }]);
     });
     xit("detects a change", () => {

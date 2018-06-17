@@ -1,5 +1,5 @@
 const {deepEqual} = require("assert");
-const getDiffBetween = require("../index");
+const {getDiffBetween, difference, intersection} = require("../index");
 
 describe("#getDiffBetween", () => {
     it("returns an empty array if both lists are empty", () => {
@@ -106,5 +106,28 @@ describe("#getDiffBetween", () => {
             name     : "Nelson",
             quantity : 6,
         }]);
+    });
+});
+
+describe("#difference", () => {
+    it("returns an empty set if the sets are the same", () => {
+        const set1 = new Set([1, 2]);
+        const set2 = new Set([1, 2]);
+        deepEqual(difference(set1, set2), new Set([]));
+    });
+    it("returns the original set if nothing is subtracted", () => {
+        const set1 = new Set([1, 2]);
+        const set2 = new Set([]);
+        deepEqual(difference(set1, set2), new Set([1, 2]));
+    });
+    it("returns the original set if something different is subtracted", () => {
+        const set1 = new Set([1, 2]);
+        const set2 = new Set([3]);
+        deepEqual(difference(set1, set2), new Set([1, 2]));
+    });
+    it("returns a difference", () => {
+        const set1 = new Set([1, 2]);
+        const set2 = new Set([2]);
+        deepEqual(difference(set1, set2), new Set([1]));
     });
 });

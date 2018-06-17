@@ -1,5 +1,5 @@
-const {deepEqual} = require("assert");
-const {getDiffBetween, difference, intersection} = require("../index");
+const {ok, deepEqual} = require("assert");
+const {getDiffBetween, difference, diffObjects} = require("../index");
 
 describe("#getDiffBetween", () => {
     it("returns an empty array if both lists are empty", () => {
@@ -41,7 +41,7 @@ describe("#getDiffBetween", () => {
             id: 2
         }]);
     });
-    xit("detects a change", () => {
+    it("detects a change", () => {
         const list = [{
             id: 1,
             name: "Kyle"
@@ -56,7 +56,7 @@ describe("#getDiffBetween", () => {
             name: "Elyse"
         }]);
     });
-    xit("lists the changes between two arrays of objects", () => {
+    it("lists the changes between two arrays of objects", () => {
         const list = [{
             id       : 1,
             name     : "Barbara",
@@ -129,5 +129,49 @@ describe("#difference", () => {
         const set1 = new Set([1, 2]);
         const set2 = new Set([2]);
         deepEqual(difference(set1, set2), new Set([1]));
+    });
+});
+
+describe("#diffObjects", () => {
+    it("returns nothing if nothing changed", () => {
+        const firstObject = {
+            id: 1,
+            name: "Kyle"
+        };
+        const secondObject = {
+            id: 1,
+            name: "Kyle"
+        };
+        ok(!diffObjects(firstObject, secondObject));
+    });
+    it("returns a change if something changed", () => {
+        const firstObject = {
+            id: 1,
+            name: "Kyle"
+        };
+        const secondObject = {
+            id: 1,
+            name: "Elyse"
+        };
+        deepEqual(diffObjects(firstObject, secondObject), {
+            id: 1,
+            name: "Elyse"
+        });
+    });
+    it("only returns changed properties", () => {
+        const firstObject = {
+            id: 1,
+            age: "Unknowable",
+            name: "Kyle"
+        };
+        const secondObject = {
+            id: 1,
+            age: "Unknowable",
+            name: "Elyse"
+        };
+        deepEqual(diffObjects(firstObject, secondObject), {
+            id: 1,
+            name: "Elyse"
+        });
     });
 });

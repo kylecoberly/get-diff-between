@@ -1,10 +1,12 @@
 module.exports = function getDiffBetween(oldArray, newArray){
-    return oldArray.reduce((diffArray, oldElement) => {
-        const matchedElement = newArray.find(newElement => oldElement.id == newElement.id);
-        if (!matchedElement) addRemoval(diffArray, oldElement.id);
+    oldIds = new Set(oldArray.map(item => item.id));
+    newIds = new Set(newArray.map(item => item.id));
 
+    const removals = [...oldIds].filter(oldId => !newIds.has(oldId));
+    return removals.reduce((diffArray, removalId) => {
+        addRemoval(diffArray, removalId);
         return diffArray;
-    },[]);
+    }, []);
 }
 
 function addRemoval(array, id){

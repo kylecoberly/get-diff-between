@@ -29,14 +29,15 @@ describe("#getDiffBetween", () => {
             id: 2
         }]);
     });
-    xit("detects an addition", () => {
+    it("detects an addition", () => {
         const list = [];
         const updatedList = [{
-            id: 1,
+            id: 2,
             name: "Kyle"
         }];
         deepEqual(getDiffBetween(list, updatedList), [{
             type: "ADD",
+            name: "Kyle",
             id: 2
         }]);
     });

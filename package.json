@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -wG tests"
+    "test": "mocha tests",
+    "test:ci": "mocha -wG tests"
   },
   "keywords": [],
   "author": "",

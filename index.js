@@ -4,18 +4,27 @@ function getDiffBetween(oldArray, newArray){
     const removedIds = difference(oldIds, newIds);
     const addedIds = difference(newIds, oldIds);
 
-    const removedItems = [...removedIds].map(id => ({id}));
-    const addedItems = [...addedIds]
-        .map(id => newArray.find(element => element.id == id));
-    const remainingNewItems = newArray
-        .filter(item => !removedIds.has(item.id) && !addedIds.has(item.id));
-    const remainingOldItems = oldArray
-        .filter(item => !removedIds.has(item.id) && !addedIds.has(item.id));
+    const {oldItems, newItems} = getRemainingItems({
+        newArray, oldArray, removedIds, addedIds
+    });
 
-    const diffArray = removedItems
-        .reduce(addToDiffList.bind(null, "REMOVE"), []);
+    return [].concat(
+        detectAdditions(newArray, addedIds),
+        detectRemovals(removedIds),
+        detectChanges(oldItems, newItems)
+    ).sort((a, b) => +a.id - +b.id);
+}
 
-    remainingNewItems.reduce((diffArray, remainingNewItem) => {
+function getRemainingItems({newArray, oldArray, removedIds, addedIds}){
+    const oldItems = oldArray
+        .filter(item => !removedIds.has(item.id) && !addedIds.has(item.id));
+    const newItems = newArray
+        .filter(item => !removedIds.has(item.id) && !addedIds.has(item.id));
+    return {oldItems, newItems};
+}
+
+function detectChanges(remainingOldItems, remainingNewItems){
+    return remainingNewItems.reduce((diffArray, remainingNewItem) => {
         const matchedOldItem = remainingOldItems
             .find(remainingOldItem => remainingOldItem.id == remainingNewItem.id);
         const differences = diffObjects(matchedOldItem, remainingNewItem);
@@ -23,11 +32,20 @@ function getDiffBetween(oldArray, newArray){
             addToDiffList("CHANGE", diffArray, differences);
         }
         return diffArray;
-    }, diffArray);
+    }, []);
+}
 
+function detectRemovals(removedIds){
+    const removedItems = [...removedIds].map(id => ({id}));
+    return removedItems
+        .reduce(addToDiffList.bind(null, "REMOVE"), []);
+}
+
+function detectAdditions(newArray, addedIds){
+    const addedItems = [...addedIds]
+        .map(id => newArray.find(element => element.id == id));
     return addedItems
-        .reduce(addToDiffList.bind(null, "ADD"), diffArray)
-        .sort((a, b) => +a.id - +b.id);
+        .reduce(addToDiffList.bind(null, "ADD"), []);
 }
 
 function diffObjects(firstObject, secondObject){
